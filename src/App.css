@@ -1,0 +1,30 @@
+html, body, #root {
+    font: 0.9rem sans-serif;
+    background: #303030;
+    color: #ffffff;
+    margin: 0;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    margin-top: 5%;
+}
+
+.didDocGen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
+
+.validation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
