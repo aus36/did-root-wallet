@@ -32,7 +32,7 @@ const App = () => {
             <div id="didDocGen" className="didDocGen">
                 <form
                 onSubmit={e => {
-                    // e.preventDefault(); // interacts with server, keep commented out for now
+                    // e.preventDefault(); // interacts with server and will blow up everything, keep commented out for now
                     // submit(url, isOrg, orgName, firstName, lastName);
                 }}>
                 <label>
