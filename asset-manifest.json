@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/did-wallet-pwa/static/css/main.28b05c1e.css",
+    "main.js": "/did-wallet-pwa/static/js/main.dc19063e.js",
+    "index.html": "/did-wallet-pwa/index.html",
+    "main.28b05c1e.css.map": "/did-wallet-pwa/static/css/main.28b05c1e.css.map",
+    "main.dc19063e.js.map": "/did-wallet-pwa/static/js/main.dc19063e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.28b05c1e.css",
+    "static/js/main.dc19063e.js"
+  ]
+}
