@@ -16,7 +16,7 @@ async function fetchJSON(url) {
     let vp = await fetchJSON(vpUrl);
     let did = await fetchJSON(didUrl);
     
-    if(vp["verifiableCredentials"][0]["credentialSubject"]["id"] = did["id"]) {
+    if(vp["verifiableCredentials"][0]["credentialSubject"]["id"] === did["id"]) {
       return true
     }
     else return false
