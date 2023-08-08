@@ -1,87 +1,73 @@
-import React, { useState } from "react";
-import { validateDidVp } from "./api/api";
+import React, { useEffect, useState } from "react";
+import { Button } from "antd";
+import * as bip39 from '@scure/bip39';
+import { wordlist as english } from '@scure/bip39/wordlists/english';
+import { getKeyPairFromMnemonic } from 'human-crypto-keys';
 import "./App.css";
 
+// Main page
 const App = () => {
-    const [url, setUrl] = useState("joe.com"); // Url for did doc creation
 
-    const [isOrg, setIsOrg] = useState(false); // flag for if the user is an organization or not
-
-    const [orgName, setOrgName] = useState(""); // name of the organization
-    const [firstName, setFirstName] = useState("joe"); // first name of the user
-    const [lastName, setLastName] = useState("brandon"); // last name of the user
-
-    const [vpUrl, setVpUrl] = useState("https://aus36.github.io/didweb-doc/vp.json"); // Url for hosted vp
-    const [didUrl, setDidUrl] = useState("https://aus36.github.io/didweb-doc/did.json"); // Url for hosted did document
-
-    const [loaded, setLoaded] = useState(false); // flag for when the validate pair function has been called
-
-    const [validateSuccessful, setValidateSuccessful] = useState(false); // flag for the result when the validate pair function has been called
-
-    const setType = () => {
-        if (document.getElementById('type').value === 'organization') {
-        setIsOrg(true);
-        } else {
-        setIsOrg(false);
-        }
+    // Functions
+    function generatePhrase(){
+        // generate a bitcoin bip39 phrase
+        const phrase = bip39.generateMnemonic(english);
+        // log and return the phrase
+        console.log(phrase);
+        return phrase;
     }
 
+    async function generateKeyPair(mnemonic){
+        // generate a keypair
+        const keyPair = await getKeyPairFromMnemonic(mnemonic, 'ed25519');
+        // log and return the keypair
+        console.log(keyPair);
+        return keyPair;
+    }
+
+    function setKeys(keyPair){
+        // set the key useStates
+        setPrivateKey(keyPair.privateKey);
+        setPublicKey(keyPair.publicKey);
+    }
+
+    // useStates for flags
+    const [loaded, setLoaded] = useState(false); // flag for when seed phrase is generated
+    const [loaded2, setLoaded2] = useState(false); // flag for when kepair is generated
+
+    // useEffect to show all information when done
+    useEffect(() => {
+        if (loaded && loaded2){
+            console.log("phrase: " + phrase);
+            console.log("private key: " + privateKey);
+            console.log("public key: " + publicKey);
+        }
+    }, [loaded, loaded2]);
+
+    // useStates for information
+    const [phrase, setPhrase] = useState(""); // seed phrase
+    const [privateKey , setPrivateKey] = useState(""); // private key
+    const [publicKey, setPublicKey] = useState(""); // public key
+
+    // JSX
     return ( 
         <div className="main-container">
-            <h1>did:web Wallet PWA</h1>
-            <div id="didDocGen" className="didDocGen">
-                <form
-                onSubmit={e => {
-                    // e.preventDefault(); // interacts with server and will blow up everything, keep commented out for now
-                    // submit(url, isOrg, orgName, firstName, lastName);
-                }}>
-                <label>
-                    URL:
-                    <input type="text" value={url} onChange={e => setUrl(e.target.value)} />
-                </label>
-                <br />
-                <label>
-                    Subject Type:
-                    <select id='type' onChange={setType}>
-                    <option value="person">Person</option>
-                    <option value="organization">Organization</option>
-                    </select>
-                </label>
-                <br />
-                {isOrg ?
-                    <label>
-                    Organization Name:
-                    <input type="text" onChange={e => setOrgName(e.target.value)} />
-                    </label> :
-                    <label>
-                    First Name:
-                    <input id="firstName" value={firstName} type="text" onChange={e => setFirstName(e.target.value)} />
-                    <br />
-                    Last Name:
-                    <input id="lastName" value={lastName} type="text" onChange={e => setLastName(e.target.value)} />
-                    </label>
-                }
-                <br />
-                <input type="submit" value="Submit" />
-                </form>
+            <h1>Decentralized Wallet PWA</h1>
+            <div className="phaseContainer">
+                <p>
+                    This is a decentralized wallet application that will allow you to create a full decentalized profile for the web.<br/>To begin, click the <strong>"generate secret phrase"</strong> button below. This will generate a random phrase that will be the seed for your keys.
+                </p>
+                <Button onClick={ () => {setPhrase(generatePhrase()); setLoaded(true)}}>Generate Secret Phrase</Button>
+            {loaded && <p>Your secret phrase: (<strong>idk how to put the phrase here</strong>)<br/><br/>IMPORTANT: This phrase cannot be regenerated or recovered, save it in a secure place.</p>}
             </div>
-            <div id="validation" className="validation">
-                <form>
-                    <label>
-                        DID Document URL:
-                        <input id="didDocUrl" value={didUrl} type="text" onChange={e => setDidUrl(e.target.value)} />
-                        <br />
-                        Verifiable Presentation URL:
-                        <input id="vpUrl" value={vpUrl} type="text" onChange={e => setVpUrl(e.target.value)} />
-                    </label>
-                </form>
-                <br />
-                <button onClick={ () => {setValidateSuccessful(validateDidVp(vpUrl, didUrl)); setLoaded(true);}}>Validate did document and vp pair</button>
-                <br />
-                {loaded
-                ? <p>Validation result: {validateSuccessful ? "Pair Sucessfully Validated" : "Invalid DID Doc/VP Pair"}</p> 
-                : <p>Nothing to validate yet</p>}
-            </div>
+            <div className="phaseContainer">
+                <p>
+                    Now that you have your secret phrase, you can generate your keypair. Click the <strong>"generate keypair"</strong> button below to generate your keypair.
+                </p>
+                <Button onClick={ () => { setKeys(generateKeyPair(phrase)); setLoaded2(true)}}>Generate Keypair</Button>
+            {loaded2 && <p>Your secret phrase: (<strong>idk how to put the phrase here</strong>)<br/><br/>IMPORTANT: This phrase cannot be regenerated or recovered, save it in a secure place.</p>}
+            <div/>
+        </div>
         </div>
     );
     }

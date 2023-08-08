@@ -13,18 +13,13 @@ html, body, #root {
     margin-top: 5%;
 }
 
-.didDocGen {
+.phaseContainer {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    margin: 50px;
-}
-
-.validation {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    margin: 50px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
 }
