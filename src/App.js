@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { Button, Form, Input, Radio } from "antd";
 import * as bip39 from '@scure/bip39';
 import * as ed from '@noble/ed25519';
-//import * as didJWT from 'did-jwt';
-//import * as didJWTvc from 'did-jwt-vc';
 import { sha512 } from '@noble/hashes/sha512';
 import { wordlist as english } from '@scure/bip39/wordlists/english';
 import "./App.css";
@@ -19,14 +17,12 @@ const App = () => {
     const [phrase, setPhrase] = useState(""); // seed phrase
     const [keyPair, setKeyPair] = useState({}); // keypair
     const [didDoc, setDidDoc] = useState({}); // did document
-    const [scvp, setScvp] = useState({}); // scvp
+    // const [scvp, setScvp] = useState({}); // scvp
 
     // useStates for user input
     const [didUrl, setDidUrl] = useState(""); // url from user input for doc generation
     const [isPerson, setIsPerson] = useState(true); // type of subject for doc generation
-    const [orgName, setOrgName] = useState(""); // name of organization for doc generation
-    const [firstName, setFirstName] = useState(""); // first name of person for doc generation
-    const [lastName, setLastName] = useState(""); // last name of person for doc generation
+    const [displayName, setDisplayName] = useState(""); // display name for doc generation
 
     // Functions
     function generatePhrase(){ // Generates a mnemonic phrase using the bitcoin bip39 standard
@@ -65,7 +61,7 @@ const App = () => {
     }
 
     function createDidDoc(){ // Creates a did document
-        if((loaded2 && loaded && didUrl !== "" ) && (orgName !== "" || (firstName !== "" && lastName !== "")))
+        if((loaded2 && loaded && didUrl !== "" ) && (displayName !== ""))
         {
             // did link for id
             const did = "did:web:" + didUrl.replace(/\//g, ':');
@@ -78,20 +74,30 @@ const App = () => {
                 ],
                 "id": did,
                 "verificationMethod": [
-            
+                    {
+                    "id": did + "#key1",
+                    "type": "Ed25519VerificationKey2020",
+                    "controller": did + "#key1",
+                    "Ed25519VerificationKey2020" : keyPair.publicKey
+                    }
                 ],
                 "assertionMethod": [
                     did + "#key1"
+                ],
+                "subject": [
+                    
                 ]
             }
 
-            // add the key to the did document
-            didDocument.verificationMethod.push({
-                "id": did + "#key1",
-                "ed25519VerificationKey2020" : keyPair.publicKey
+            // add the subject info to the did document
+            didDocument.subject.push({
+                "subjectType": isPerson ? "Person" : "Organization",
+                "displayName": displayName,
+                "displayImg": "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
             });
             
-            // return didDoc
+            // return and log didDoc
+            console.log(JSON.stringify(didDocument, null, 2));
             return didDocument;
         }
         else return {}; // if step 2 not complete yet, return empty object
@@ -125,21 +131,15 @@ const App = () => {
             <div className="phaseContainer"> {/* Document Generator */}
                 <p>This is the final step. Enter your DID URL, then click the <strong>"generate DID"</strong> button below to generate your a starter DID document and SCVP.</p>
                 <Form style={{ width: "25%"}}>
-                    <Radio.Group value = {isPerson ? true : false} style={{marginBottom : "10px"}}  onChange={(e) => {const selectedVal = e.target.value; setIsPerson(selectedVal); console.log(isPerson);}}>
-                        <Radio defaultChecked = {isPerson} style = {{color : "white"}} value = {false}>Person</Radio>
-                        <Radio defaultChecked = {isPerson} style = {{color : "white"}} value = {true}>Organization</Radio> {/* I have no idea why but these values must be reversed to work */}
+                    <Radio.Group value = {isPerson ? true : false} style={{marginBottom : "10px"}}  onChange={(e) => {const selectedVal = e.target.value; setIsPerson(selectedVal);}}>
+                        <Radio defaultChecked = {isPerson} style = {{color : "white"}} value = {true}>Person</Radio>
+                        <Radio defaultChecked = {isPerson} style = {{color : "white"}} value = {false}>Organization</Radio>
                     </Radio.Group>
                     <Form.Item name = "didUrl">
                         <Input onChange={(e) => setDidUrl(e.target.value)} placeholder="Enter your DID URL"></Input>
                     </Form.Item>
                     <Form.Item>
-                        <Input onChange={(e) => setOrgName(e.target.value)} placeholder="Enter your org name"></Input>
-                    </Form.Item>
-                    <Form.Item>
-                        <Input onChange={(e) => setFirstName(e.target.value)} placeholder="Enter your first name"></Input>
-                    </Form.Item>
-                    <Form.Item>
-                        <Input onChange={(e) => setLastName(e.target.value)} placeholder="Enter your last name"></Input>
+                        <Input onChange={(e) => setDisplayName(e.target.value)} placeholder="Enter your display name"></Input>
                     </Form.Item>
                 </Form>
                 <Button onClick={() => {setDidDoc(createDidDoc())}}> Generate DID </Button>
