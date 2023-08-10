@@ -14,5 +14,5 @@ To run a development instance of this application:
 * clone the application to your machine and navigate to the folder in your console
 * run ```npm install``` to install all dependencies
 * run ```npm start``` to start the development server
-* if the console doesn't automatically open the browser page, navigate to the browser and enter the url: http://localhost:3000/did-wallet-pwa
+* if the console doesn't automatically open the browser page, navigate to the browser and enter the url: http://localhost:3000/did-root-wallet
 * That's it! 🎉 If any issues are found, please feel free to post them in the GitHub issues page for this repo
