@@ -17,7 +17,7 @@ const App = () => {
     const [phrase, setPhrase] = useState(""); // seed phrase
     const [keyPair, setKeyPair] = useState({}); // keypair
     const [didDoc, setDidDoc] = useState({}); // did document
-    // const [scvp, setScvp] = useState({}); // scvp
+    const [scvp, setScvp] = useState({}); // scvp
 
     // useStates for user input
     const [didUrl, setDidUrl] = useState(""); // url from user input for doc generation
@@ -103,11 +103,70 @@ const App = () => {
         else return {}; // if step 2 not complete yet, return empty object
     }
 
+    function createSCVP()
+    {
+        // record did
+        const did = "did:web:" + didUrl.replace(/\//g, ':');
+
+        // record current datetime
+        const date = new Date();
+        const ctime = date.toISOString();
+        const etime = "expiration not specified";
+
+        // create the scvp
+        const VP = {
+                "@context": [
+                  "https://www.w3.org/2018/credentials/v1"
+                ],
+                "type": [
+                  "VerifiablePresentation", "SigchainPresentation"
+                ],
+                "verifiableCredential": [
+                  {
+                      "@context": [
+                          "https://www.w3.org/2018/credentials/v1",
+                          "https://www.w3.org/2018/credentials/examples/v1"
+                      ],
+                      "id": "http://example.com/user/sigs/eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ",
+                      "type": [
+                          "VerifiableCredential",
+                          "SigchainCredential"
+                      ],
+                      "issuer": did,
+                      "issuanceDate": ctime,
+                      "prev": null,
+                      "seqno": 1,
+                      "ctime": ctime,
+                      "etime": etime,
+                      "credentialSubject": {
+                          "id":did,
+                          "vmHash": "sImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19 - replace this later",
+                          "type": "identity",
+                          "service": {
+                              "name": "Github",
+                              "user": "https://github.com/aus36",
+                              "proof": "https://github.com/aus36/sample-proof/blob/master/proof.json"
+                          },
+                          "version": 0.1
+                      },
+                      "proof": {
+                          "type": "Ed25519Signature2018",
+                          "created": ctime,
+                          "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..AUQ3AJ23WM5vMOWNtYKuqZBekRAOUibOMH9XuvOd39my1sO-X9R4QyAXLD2ospssLvIuwmQVhJa-F0xMOnkvBg - replace this later",
+                          "proofPurpose": "assertionMethod",
+                          "verificationMethod": did + "#key1"
+                      }
+                  }
+                ]
+            } 
+        return VP;
+    }
+
     // JSX output to page
     return (
         <div className="main-container"> {/* Main container with application header */}
             <h1>DID Root - Wallet</h1>
-            <p>This is a decentralized wallet application that will allow you to create a full decentalized profile for the web.</p>
+            <p>This is a decentralized wallet application that will allow you to create a full decentralized profile for the web.</p>
             <p>The application is also a PWA, so it is downloadable to desktop and mobile</p>
 
             <div className="phaseContainer"> {/* Phrase Generator */}
@@ -142,11 +201,16 @@ const App = () => {
                         <Input onChange={(e) => setDisplayName(e.target.value)} placeholder="Enter your display name"></Input>
                     </Form.Item>
                 </Form>
-                <Button onClick={() => {setDidDoc(createDidDoc())}}> Generate DID </Button>
+                <Button onClick={() => {setDidDoc(createDidDoc()); setScvp(createSCVP());}}> Generate DID </Button>
             </div>
-            { JSON.stringify(didDoc) !== "{}" && 
-            <div style = {{maxWidth : "900px"}} className="phaseContainer"> {/* Display DID Document if Generated */}
+            { JSON.stringify(didDoc) !== "{}" &&
+            <div className="phaseContainer"> {/* Display DID Document if Generated */}
                 <code>Did document: ({JSON.stringify(didDoc, null, 2)})</code>
+            </div>
+            }
+            { JSON.stringify(scvp) !== "{}" &&
+            <div className="phaseContainer"> {/* Display SCVP Document if Generated */}
+                <code>SCVP document: ({JSON.stringify(scvp, null, 2)})</code>
             </div>
             }
         </div>
