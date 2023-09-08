@@ -103,7 +103,7 @@ const App = () => {
         else return {}; // if step 2 not complete yet, return empty object
     }
 
-    function createSCVP()
+    function createSCVP() // creates sigchain verifiable presentation (the full profile of the user)
     {
         // record did
         const did = "did:web:" + didUrl.replace(/\//g, ':');
@@ -162,6 +162,19 @@ const App = () => {
         return VP;
     }
 
+    async function validateOwnership(owner, repo, branch) { // test function for now to check if the user owns the repo
+        const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/README.md`;
+    
+        try {
+            const response = await fetch(rawUrl);
+            const content = await response.text();
+            return content;
+        } catch (error) {
+            console.error('Error fetching the README:', error);
+            return null;
+        }
+    }
+
     // JSX output to page
     return (
         <div className="main-container"> {/* Main container with application header */}
@@ -182,7 +195,7 @@ const App = () => {
                 </p>
                 <Button onClick={ () => { setKeyPair(generateKeyPair(phrase)); setLoaded2(true)}}>Generate Keypair</Button>
                 {loaded2 && phrase !== "" && keyPair.privateKey && <p>Your private key: (<strong>{keyPair.privateKey}</strong>)</p>}
-                {loaded2 && phrase !== "" && keyPair.publicKey && <p>Your public key: (<strong>{keyPair.publicKey}</strong>)</p>}            
+                {loaded2 && phrase !== "" && keyPair.publicKey && <p>Your public key: (<strong>{keyPair.publicKey}</strong>)</p>}
                 {loaded2 && phrase === "" && <p style={{color: "red"}}>Please complete all previous steps first.</p>}
                 
             </div>
@@ -213,6 +226,17 @@ const App = () => {
                 <code>SCVP document: ({JSON.stringify(scvp, null, 2)})</code>
             </div>
             }
+
+            <div className="phaseContainer"> {/* Test validation of ownership */}
+                <Button onClick={ () => {
+                    validateOwnership('aus36', 'did-root-validation', 'master')
+                    .then(content => {
+                        console.log(content);
+                    });}}>
+                    Test Validation
+                </Button>
+            </div>
+        
         </div>
     );
 }
