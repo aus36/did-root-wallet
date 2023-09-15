@@ -7,7 +7,7 @@ This application is a progressive web application that is used to generate a dec
 * 📑 Asks the user to input some basic details, and then creates a did:web document and sigchain verifiable presentation
 
 ### How to use - Live
-To accesss the application, simply [click this link](https://aus36.github.io/did-wallet-pwa/) to navigate to the site. Also, since the website is a progressive web application, the application can be downloaded and used on or offline on the desktop or mobile.
+To accesss the application, simply [click this link](https://aus36.github.io/did-root-wallet/) to navigate to the site. Also, since the website is a progressive web application, the application can be downloaded and used on or offline on the desktop or mobile.
 
 ### How to use - For Developers
 To run a development instance of this application:
