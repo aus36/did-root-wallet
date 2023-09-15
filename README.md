@@ -1,4 +1,4 @@
-# DID:ROOT Wallet
+# Root Wallet
 This application is a progressive web application that is used to generate a decentralized profile for a sigchain-based contacts application.
 
 ### Uses

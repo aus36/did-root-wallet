@@ -5,7 +5,7 @@ import * as bip39 from '@scure/bip39';
 import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha512';
 import { wordlist as english } from '@scure/bip39/wordlists/english';
-import "./App.css";
+import "./styles/App.css";
 
 // Main page
 const App = () => {
@@ -178,21 +178,24 @@ const App = () => {
     // JSX output to page
     return (
         <div className="main-container"> {/* Main container with application header */}
-            <h1>DID Root - Wallet</h1>
-            <p>This is a decentralized wallet application that will allow you to create a full decentralized profile for the web.</p>
-            <p>The application is also a PWA, so it is downloadable to desktop and mobile</p>
+            <div className="header">
+                <div className="header-logo">
+                    <h1>Root</h1>
+                    <img className="logo" src="./assets/logo100.png" alt="rootlogo"></img>
+                </div>
+                <h2>Wallet</h2>
+            </div>
+            <p className="typewriter">Welcome to Root Wallet. Please choose an option below to manage your decentralized identity.</p>
 
             <div className="phaseContainer"> {/* Phrase Generator */}
-                <p>To begin, click the <strong>"generate secret phrase"</strong> button below. This will generate a random phrase that will be the seed for your keys.</p>
+                <p>To begin, click the <strong>"generate secret phrase"</strong> button below. This will generate your random recovery phrase.</p>
                 <Button onClick={ () => {setPhrase(generatePhrase());}}>Generate Secret Phrase</Button>
                 {loaded && <p>Your secret phrase: (<strong>{phrase}</strong>)<br/>
                 <br/>IMPORTANT: This phrase cannot be regenerated or recovered, and can be used to recover your account. Save it in a secure place.</p>}
             </div>
 
             <div className="phaseContainer"> {/* Keypair Generator */}
-                <p>
-                    Now that you have your secret phrase, you can generate your keypair. Click the <strong>"generate keypair"</strong> button below to generate your keypair.
-                </p>
+                <p>Now that you have your secret phrase, you can generate your keypair. Click the <strong>"generate keypair"</strong> button below.</p>
                 <Button onClick={ () => { setKeyPair(generateKeyPair(phrase)); setLoaded2(true)}}>Generate Keypair</Button>
                 {loaded2 && phrase !== "" && keyPair.privateKey && <p>Your private key: (<strong>{keyPair.privateKey}</strong>)</p>}
                 {loaded2 && phrase !== "" && keyPair.publicKey && <p>Your public key: (<strong>{keyPair.publicKey}</strong>)</p>}
@@ -201,7 +204,7 @@ const App = () => {
             </div>
 
             <div className="phaseContainer"> {/* Document Generator */}
-                <p>This is the final step. Enter your DID URL, then click the <strong>"generate DID"</strong> button below to generate your a starter DID document and SCVP.</p>
+                <p>To finalize your new profile, fill in your profile information and click the <strong>"Generate DID"</strong> button below.</p>
                 <Form style={{ width: "25%"}}>
                     <Radio.Group value = {isPerson ? true : false} style={{marginBottom : "10px"}}  onChange={(e) => {const selectedVal = e.target.value; setIsPerson(selectedVal);}}>
                         <Radio defaultChecked = {isPerson} style = {{color : "white"}} value = {true}>Person</Radio>
@@ -218,16 +221,16 @@ const App = () => {
             </div>
             { JSON.stringify(didDoc) !== "{}" &&
             <div className="phaseContainer"> {/* Display DID Document if Generated */}
-                <code>Did document: ({JSON.stringify(didDoc, null, 2)})</code>
+                <code>DID document: ({JSON.stringify(didDoc, null, 2)})</code>
             </div>
             }
             { JSON.stringify(scvp) !== "{}" &&
             <div className="phaseContainer"> {/* Display SCVP Document if Generated */}
-                <code>SCVP document: ({JSON.stringify(scvp, null, 2)})</code>
+                <code>SCVP: ({JSON.stringify(scvp, null, 2)})</code>
             </div>
             }
 
-            <div className="phaseContainer"> {/* Test validation of ownership */}
+            {/* <div className="phaseContainer">
                 <Button onClick={ () => {
                     validateOwnership('aus36', 'did-root-validation', 'master')
                     .then(content => {
@@ -235,7 +238,7 @@ const App = () => {
                     });}}>
                     Test Validation
                 </Button>
-            </div>
+            </div> */}
         
         </div>
     );
