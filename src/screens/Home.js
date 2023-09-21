@@ -1,12 +1,12 @@
 // Imports
 import React, { useState } from "react";
-import { Button, Form, Input, Radio } from "antd";
+import { Button, Form, Input } from "antd";
 import * as bip39 from '@scure/bip39';
 import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha512';
 import { wordlist as english } from '@scure/bip39/wordlists/english';
 import { useNavigate } from "react-router-dom";
-import "../styles/App.css";
+import "../styles/Home.css";
 
 // Main page
 const Home = () => {
@@ -22,7 +22,6 @@ const Home = () => {
 
     // useStates for user input
     const [didUrl, setDidUrl] = useState(""); // url from user input for doc generation
-    const [isPerson, setIsPerson] = useState(true); // type of subject for doc generation
     const [displayName, setDisplayName] = useState(""); // display name for doc generation
 
     // Functions
@@ -92,7 +91,6 @@ const Home = () => {
 
             // add the subject info to the did document
             didDocument.subject.push({
-                "subjectType": isPerson ? "Person" : "Organization",
                 "displayName": displayName,
                 "displayImg": "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
             });
@@ -206,11 +204,7 @@ const Home = () => {
 
             <div className="phaseContainer"> {/* Document Generator */}
                 <p>To finalize your new profile, fill in your profile information and click the <strong>"Generate DID"</strong> button below.</p>
-                <Form style={{ width: "25%"}}>
-                    <Radio.Group value = {isPerson ? true : false} style={{marginBottom : "10px"}}  onChange={(e) => {const selectedVal = e.target.value; setIsPerson(selectedVal);}}>
-                        <Radio defaultChecked = {isPerson} style = {{color : "white"}} value = {true}>Person</Radio>
-                        <Radio defaultChecked = {isPerson} style = {{color : "white"}} value = {false}>Organization</Radio>
-                    </Radio.Group>
+                <Form style={{ width: "23%"}}>
                     <Form.Item name = "didUrl">
                         <Input onChange={(e) => setDidUrl(e.target.value)} placeholder="Enter your DID URL"></Input>
                     </Form.Item>

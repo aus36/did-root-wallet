@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=Open+Sans&family=Roboto+Mono:wght@200&display=swap');
 
-html, body {
+body {
     font-size: 14px;
     font-family: 'IBM Plex Mono', monospace;
     font-family: 'Open Sans', sans-serif;
     font-family: 'Roboto Mono', monospace;
     background: #202020;
     color: #ffffff;
-    margin: 0;
+    padding-inline: 60px;
 }
 
 .logo {
@@ -25,9 +25,9 @@ html, body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    align-items: center;
     margin-top: 5%;
-    padding-inline: 100px;
+    max-width: fit-content;
+    margin-inline: auto;
 }
 
 h1 {
