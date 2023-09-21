@@ -6,6 +6,7 @@ import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha512';
 import { wordlist as english } from '@scure/bip39/wordlists/english';
 import { useNavigate } from "react-router-dom";
+import { createDidDoc, createSCVP } from "../didOperations";
 import "../styles/Home.css";
 
 // Main page
@@ -60,107 +61,6 @@ const Home = () => {
         else return {}; // if step 1 not complete yet, return empty object
     }
 
-    function createDidDoc(){ // Creates a did document
-        if((loaded2 && loaded && didUrl !== "" ) && (displayName !== ""))
-        {
-            // did link for id
-            const did = "did:web:" + didUrl.replace(/\//g, ':');
-            console.log(did);
-            // start with did doc template using did
-            const didDocument = {
-                "@context": [
-                    "https://www.w3.org/ns/did/v1",
-                    "https://w3id.org/security/suites/jws-2020/v1"
-                ],
-                "id": did,
-                "verificationMethod": [
-                    {
-                    "id": did + "#key1",
-                    "type": "Ed25519VerificationKey2020",
-                    "controller": did + "#key1",
-                    "Ed25519VerificationKey2020" : keyPair.publicKey
-                    }
-                ],
-                "assertionMethod": [
-                    did + "#key1"
-                ],
-                "subject": [
-                    
-                ]
-            }
-
-            // add the subject info to the did document
-            didDocument.subject.push({
-                "displayName": displayName,
-                "displayImg": "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
-            });
-            
-            // return and log didDoc
-            console.log(JSON.stringify(didDocument, null, 2));
-            return didDocument;
-        }
-        else return {}; // if step 2 not complete yet, return empty object
-    }
-
-    function createSCVP() // creates sigchain verifiable presentation (the full profile of the user)
-    {
-        // record did
-        const did = "did:web:" + didUrl.replace(/\//g, ':');
-
-        // record current datetime
-        const date = new Date();
-        const ctime = date.toISOString();
-        const etime = "expiration not specified";
-
-        // create the scvp
-        const VP = {
-                "@context": [
-                  "https://www.w3.org/2018/credentials/v1"
-                ],
-                "type": [
-                  "VerifiablePresentation", "SigchainPresentation"
-                ],
-                "verifiableCredential": [
-                  {
-                      "@context": [
-                          "https://www.w3.org/2018/credentials/v1",
-                          "https://www.w3.org/2018/credentials/examples/v1"
-                      ],
-                      "id": "http://example.com/user/sigs/eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ",
-                      "type": [
-                          "VerifiableCredential",
-                          "SigchainCredential"
-                      ],
-                      "issuer": did,
-                      "issuanceDate": ctime,
-                      "prev": null,
-                      "seqno": 1,
-                      "ctime": ctime,
-                      "etime": etime,
-                      "credentialSubject": {
-                          "id":did,
-                          "vmHash": "sImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19 - replace this later",
-                          "type": "identity",
-                          "service": {
-                              "name": "Github",
-                              "user": "https://github.com/aus36",
-                              "proof": "https://github.com/aus36/sample-proof/blob/master/proof.json"
-                          },
-                          "version": 0.1
-                      },
-                      "proof": {
-                          "type": "Ed25519Signature2018",
-                          "created": ctime,
-                          "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..AUQ3AJ23WM5vMOWNtYKuqZBekRAOUibOMH9XuvOd39my1sO-X9R4QyAXLD2ospssLvIuwmQVhJa-F0xMOnkvBg - replace this later",
-                          "proofPurpose": "assertionMethod",
-                          "verificationMethod": did + "#key1"
-                      }
-                  }
-                ]
-            } 
-        return VP;
-    }
-
     async function validateOwnership(owner, repo, branch) { // test function for now to check if the user owns the repo
         const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/README.md`;
     
@@ -179,18 +79,18 @@ const Home = () => {
         <div className="main-container"> {/* Main container with application header */}
             <div className="header">
                 <div className="header-logo">
-                    <h1>Root</h1>
-                    <img className="logo" src="./assets/logo100.png" alt="rootlogo"></img>
+                    <h1>Suri</h1>
+                    <img className="logo" src="./assets/logo100.png" alt="surilogo"></img>
                 </div>
                 <h2>Wallet</h2>
             </div>
-            <p className="typewriter">Welcome to Root Wallet. Please choose an option below to manage your decentralized identity.</p>
+            <p>Welcome to Suri Wallet. Please choose an option below to manage your decentralized identity.</p>
 
             <div className="phaseContainer"> {/* Phrase Generator */}
                 <p>To begin, click the <strong>"generate secret phrase"</strong> button below. This will generate your random recovery phrase.</p>
                 <Button onClick={ () => {setPhrase(generatePhrase());}}>Generate Secret Phrase</Button>
                 {loaded && <p>Your secret phrase: (<strong>{phrase}</strong>)<br/>
-                <br/>IMPORTANT: This phrase cannot be regenerated or recovered, and can be used to recover your account. Save it in a secure place.</p>}
+                <br/><p style={{color: "red"}}>IMPORTANT: This phrase cannot be regenerated or recovered, and can be used to recover your account. Save it in a secure place.</p></p>}
             </div>
 
             <div className="phaseContainer"> {/* Keypair Generator */}
@@ -205,14 +105,17 @@ const Home = () => {
             <div className="phaseContainer"> {/* Document Generator */}
                 <p>To finalize your new profile, fill in your profile information and click the <strong>"Generate DID"</strong> button below.</p>
                 <Form style={{ width: "23%"}}>
-                    <Form.Item name = "didUrl">
+                    <Form.Item>
                         <Input onChange={(e) => setDidUrl(e.target.value)} placeholder="Enter your DID URL"></Input>
                     </Form.Item>
                     <Form.Item>
                         <Input onChange={(e) => setDisplayName(e.target.value)} placeholder="Enter your display name"></Input>
                     </Form.Item>
                 </Form>
-                <Button onClick={() => {setDidDoc(createDidDoc()); setScvp(createSCVP());}}> Generate DID </Button>
+                <Button 
+                    onClick={() => {setDidDoc(createDidDoc(didUrl, displayName, keyPair)); setScvp(createSCVP(didUrl));}}>
+                    Generate DID
+                </Button>
             </div>
             { JSON.stringify(didDoc) !== "{}" &&
             <div className="phaseContainer"> {/* Display DID Document if Generated */}

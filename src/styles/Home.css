@@ -7,7 +7,7 @@ body {
     font-family: 'Roboto Mono', monospace;
     background: #202020;
     color: #ffffff;
-    padding-inline: 60px;
+    padding-inline: 5%;
 }
 
 .logo {
@@ -28,6 +28,7 @@ body {
     margin-top: 5%;
     max-width: fit-content;
     margin-inline: auto;
+    align-items: center;
 }
 
 h1 {
