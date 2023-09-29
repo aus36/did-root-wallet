@@ -4,10 +4,10 @@ This application is a progressive web application that is used to generate a dec
 ### Uses
 * 🔐 Generates an ed25519 keypair for the user and shows it to them
 * 🌱 Shares the seed phrase that generated the keypair so the user can save it for recovery
-* 📑 Asks the user to input some basic details, and then creates a did:web document and sigchain verifiable presentation
-
+* 📑 Asks the user to input some basic details, and then creates a did:web document and sigchain verifiable presentation (SCVP)
+* ⚙️ Allows modification of the SCVP to add verified social media accounts in the form of verifiable credentials (VCs)
 ### How to use - Live
-To accesss the application, simply [click this link](https://aus36.github.io/did-root-wallet/) to navigate to the site. Also, since the website is a progressive web application, the application can be downloaded and used on or offline on the desktop or mobile.
+To accesss the application, simply [click this link](https://aus36.github.io/did-root-wallet/) to navigate to the site. Also, since the website is a progressive web application, the application can be downloaded and used on or offline on the desktop or mobile. (Note that this version is the last stable release and will not always be up to date with the latest changes in the repo)
 
 ### How to use - For Developers
 To run a development instance of this application:
