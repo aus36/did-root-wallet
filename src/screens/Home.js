@@ -11,6 +11,9 @@ import "../styles/Home.css";
 
 // Main page
 const Home = () => {
+
+    const navigate = useNavigate(); // navigation hook
+
     // useStates for flags
     const [loaded, setLoaded] = useState(false); // flag for when seed phrase is generated
     const [loaded2, setLoaded2] = useState(false); // flag for when kepair is generated
@@ -128,7 +131,7 @@ const Home = () => {
             </div>
             }
 
-            {/* <div className="phaseContainer">
+            {/* <div>
                 <Button onClick={ () => {
                     validateOwnership('aus36', 'did-root-validation', 'master')
                     .then(content => {
