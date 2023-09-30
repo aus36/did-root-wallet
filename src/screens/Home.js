@@ -6,7 +6,7 @@ import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha512';
 import { wordlist as english } from '@scure/bip39/wordlists/english';
 import { useNavigate } from "react-router-dom";
-import { createDidDoc, createSCVP } from "../didOperations";
+import { createDidDoc, createSCVP } from "../functions/didOperations";
 import "../styles/Home.css";
 
 // Main page
