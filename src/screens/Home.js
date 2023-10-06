@@ -91,7 +91,7 @@ const Home = () => {
 
             <div className="phaseContainer"> {/* Phrase Generator */}
                 <p>To begin, click the <strong>"generate secret phrase"</strong> button below. This will generate your random recovery phrase.</p>
-                <Button onClick={ () => {setPhrase(generatePhrase());}}>Generate Secret Phrase</Button>
+                <Button onClick={ () => {navigate("/vc"); setPhrase(generatePhrase());}}>Generate Secret Phrase</Button>
                 {loaded && <p>Your secret phrase: (<strong>{phrase}</strong>)<br/>
                 <br/><p style={{color: "red"}}>IMPORTANT: This phrase cannot be regenerated or recovered, and can be used to recover your account. Save it in a secure place.</p></p>}
             </div>
