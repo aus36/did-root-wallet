@@ -1,5 +1,3 @@
-# ⚠️ This application is deprecated. SURI wallet is now a mobile application and is located at the new repo [here](https://github.com/aus36/suri-wallet).
-
 # SURI Wallet
 This application is a progressive web application that is used to generate a decentralized profile for a sigchain-based contacts application.
 
